@@ -11,7 +11,7 @@ moneyfeels
 	apt-get install python-virtualenv git
 
 ## Setting up the enviroment
-	git clone https://github.com/showintellinar/moneyfeels.git
+	git clone https://github.com/showandtellinar/moneyfeels.git
 	cd moneyfeels
 	virtualenv .
 	cd bin

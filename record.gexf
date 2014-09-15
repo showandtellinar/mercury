@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" version="1.2">
+	<graph mode="static" defaultedgetype="directed">
+		<nodes>
+			<node id="0" label="17NMkPu7Nd41B8pPwaZVWXtJ9tmZBoCZdy" />
+			<node id="1" label="1A4Y8zxKvGHqUsyKg7FDKmuihLqC1HzgF4" />
+			<node id="2" label="171u2NMUDuxQEDcAphkKBj285HckywsPqJ" />
+			<node id="3" label="1FHKW7smZSsLPS7BCPuWwpMWSyRwsfabcp" />
+			<node id="4" label="1PiYF1BeYmvRvE9mz2a6LyVsFvAbqK4fHn" />
+			<node id="5" label="13PHYFJCmpymRUJ2u4Lc8Yk6m3nXoDXfny" />
+			<node id="6" label="16s1SN7Leia2cN9yiDJZKot6NmaDHVMqEB" />
+			<node id="7" label="135cVSpV6o5Yb9QWoXv1iNb2AchG4rfFDh" />
+			<node id="8" label="1CiLtyGmS8bW5awBLSSVZa6doXxbzJ8Awt" />
+			<node id="9" label="1MtZkQgdrGmFCj7bReoCrPyAUKZ2Vbhbzr" />
+			<node id="10" label="17bdXDTzaurvZSGxGRzFMdJPcDELLcwczm" />
+			<node id="11" label="16HcRAyzHCMwzXBnd1Kocb1V3Uq4go7F6q" />
+			<node id="12" label="1AYELcuQLs8rt4kZHhk22BR5cF2J8UyJ6j" />
+			<node id="13" label="1KnHM4k8CpoXy3LBjuM6Ae3WxsJmzwJNRX" />
+			<node id="14" label="1Akskfxfc28QyV4rRKBdMd14LwK3QKswgg" />
+			<node id="15" label="1DzXzezzSB5f4jY2meHxwzrgZdkRsAT6pS" />
+			<node id="16" label="17JUX6rNqkHwKPgA5qDmdZ7gVFTinrNazF" />
+			<node id="17" label="1G96FCLvX8Je7e6cPaJAeDqtyFrFdEWahS" />
+			<node id="18" label="1NAHgQbZn6vtZJvfA1Z3NdaTFZyi31E2tr" />
+			<node id="19" label="18yYPBXaAUoQf7yvw1Lw3QbY7fADHS9Kzd" />
+			<node id="20" label="1BfdPY6BeLe3BGPQkVs8FoyTtmSyoJ4e4Z" />
+			<node id="21" label="14qwiwTEphMVvwzgJZsk1XDbQQgxNZtjjq" />
+			<node id="22" label="1MuwXMvpuyuBtHexvn1u8oJyzYDWFyfH1b" />
+			<node id="23" label="1P5oDemn94f8ZpZRZp6ybFM4JSoU5gQ7Xr" />
+			<node id="24" label="19HtgKAmeTA2sxXceXB3GJ9mX2pkniwhEF" />
+			<node id="25" label="1PYdAEuZZkMEGVHdXSeHtKbzZsZefsTUaL" />
+			<node id="26" label="1NjrqkAcLAKnjLQh7xMpa7Qontx8r8Hf4S" />
+			<node id="27" label="1JRU3tDSUNSa9dbHyw1a78a545qSDGA4R4" />
+			<node id="28" label="1AvuTjHuJ4aQw5ftJAT9mJXZH26raxAM4w" />
+			<node id="29" label="1NPHoED8gFSpBNQj6owW9SizwqFRwBFFNZ" />
+			<node id="30" label="1MWU9nK1bDcVki8FUg24oEXdEGe8p9iSPo" />
+			<node id="31" label="1PMCz9y8EL34yUivUM5Yjo13CBoA6wpETo" />
+			<node id="32" label="1LcS6v11Q5vuYpENnDJauGiLiGsJAUNiEL" />
+			<node id="33" label="13RruMZmhLJUGuXYqenak3HgDc3bBx9xtd" />
+			<node id="34" label="1MifLw91Ce1zKZCcVMo8QfC5ReFSSBkoLp" />
+			<node id="35" label="1BgFKi6qTGbLdEKZNmPFcqs9t7N6WpMzpA" />
+			<node id="36" label="1Cx6d5q75goJxsKTtUbEBKJ4hmFmpzvssy" />
+			<node id="37" label="1KGJNiPHCZP4zL4FrcshCME9YYdaToAVtd" />
+			<node id="38" label="1BxEi1e5za5jMx9XXsxEawt9t4zvXn9nUs" />
+			<node id="39" label="1Am6R9bZCg1JPVuhrnsJkMDAjEpsG32WFU" />
+			<node id="40" label="16dwAg6jAKMHS8tnevBF9g45F9LtjFkjzH" />
+			<node id="41" label="173KjL454KFjToTK84YGPYCVJfZJyPDyoL" />
+			<node id="42" label="12jVhnGFkiTwNwSctSJsaNAxj2k4rA3Ltp" />
+			<node id="43" label="1AHqqVwHgPemT3ioNNJmZ8KgpnF1gGf5LH" />
+			<node id="44" label="1EynxFavdjvvvfdzwrLGUk4VP8ohh2gMEB" />
+			<node id="45" label="1KBBp3gpuH6VhZjwjXL2obufAJzS19SCrn" />
+		</nodes>
+		<edges>
+			<edge id="0" source="3" target="14" />
+			<edge id="1" source="3" target="3" />
+			<edge id="2" source="3" target="20" />
+			<edge id="3" source="3" target="40" />
+			<edge id="4" source="3" target="26" />
+			<edge id="5" source="14" target="14" />
+			<edge id="6" source="14" target="40" />
+			<edge id="7" source="14" target="26" />
+			<edge id="8" source="20" target="3" />
+			<edge id="9" source="20" target="16" />
+			<edge id="10" source="20" target="40" />
+			<edge id="11" source="20" target="29" />
+			<edge id="12" source="20" target="20" />
+			<edge id="13" source="20" target="45" />
+			<edge id="14" source="40" target="17" />
+			<edge id="15" source="40" target="0" />
+			<edge id="16" source="40" target="1" />
+			<edge id="17" source="40" target="18" />
+			<edge id="18" source="40" target="19" />
+			<edge id="19" source="40" target="2" />
+			<edge id="20" source="40" target="3" />
+			<edge id="21" source="40" target="22" />
+			<edge id="22" source="40" target="23" />
+			<edge id="23" source="40" target="24" />
+			<edge id="24" source="40" target="5" />
+			<edge id="25" source="40" target="6" />
+			<edge id="26" source="40" target="28" />
+			<edge id="27" source="40" target="7" />
+			<edge id="28" source="40" target="21" />
+			<edge id="29" source="40" target="9" />
+			<edge id="30" source="40" target="30" />
+			<edge id="31" source="40" target="26" />
+			<edge id="32" source="40" target="31" />
+			<edge id="33" source="40" target="32" />
+			<edge id="34" source="40" target="33" />
+			<edge id="35" source="40" target="10" />
+			<edge id="36" source="40" target="11" />
+			<edge id="37" source="40" target="34" />
+			<edge id="38" source="40" target="12" />
+			<edge id="39" source="40" target="20" />
+			<edge id="40" source="40" target="13" />
+			<edge id="41" source="40" target="35" />
+			<edge id="42" source="40" target="38" />
+			<edge id="43" source="40" target="8" />
+			<edge id="44" source="40" target="15" />
+			<edge id="45" source="40" target="14" />
+			<edge id="46" source="40" target="37" />
+			<edge id="47" source="40" target="39" />
+			<edge id="48" source="40" target="40" />
+			<edge id="49" source="40" target="41" />
+			<edge id="50" source="40" target="25" />
+			<edge id="51" source="40" target="42" />
+			<edge id="52" source="40" target="43" />
+			<edge id="53" source="40" target="4" />
+			<edge id="54" source="40" target="44" />
+			<edge id="55" source="26" target="36" />
+			<edge id="56" source="26" target="27" />
+			<edge id="57" source="26" target="14" />
+			<edge id="58" source="26" target="40" />
+			<edge id="59" source="26" target="26" />
+		</edges>
+	</graph>
+</gexf>

@@ -14,6 +14,7 @@ moneyfeels
 	git clone https://github.com/showandtellinar/moneyfeels.git
 	cd moneyfeels
 	virtualenv .
-	cd bin
 	bin/pip install nltk
 	bin/pip install matplotlib	
+	bin/pip install numpy
+	bin/pip install requests

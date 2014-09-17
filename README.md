@@ -15,6 +15,4 @@ moneyfeels
 	cd moneyfeels
 	virtualenv .
 	bin/pip install nltk
-	bin/pip install matplotlib	
-	bin/pip install numpy
 	bin/pip install requests

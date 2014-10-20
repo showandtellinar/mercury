@@ -1,0 +1,152 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script src="dist/paper-core.js"></script>
+	<script src="dist/paper-full.js"></script>
+	<script src="js/parse.js"></script>
+</head>
+
+<body>
+	<canvas id="glcanvas" width="640" height="640">
+		It's not working.
+	</canvas>
+
+	<script>
+	// I dislike JS this much: 1----x---10
+
+	var canvas = document.getElementById("glcanvas");
+	var height = canvas.height;
+	var width = canvas.width;
+
+	function start() {
+		paper.setup(canvas);
+	}
+
+	function find_node(name) {
+		for (i = 0; i < nodes.length; ++i) {
+			if (nodes[i].name == name) {
+				return nodes[i]
+			}
+		}
+		return null;
+	}
+
+	function draw_graph() {
+		var pointpaths = [];
+		nodes.forEach(function(node) {
+			var x = node.x;
+			var y = node.y;
+			var circle = new paper.Path.Circle(new paper.Point(x, y), 5);
+			circle.fillColor = 'black';
+			pointpaths.push(circle);
+		});
+
+		var edgepaths = [];
+		edges.forEach(function(edge) {
+			var source = find_node(edge.a);
+			var start = new paper.Point(source.x, source.y);
+
+			var dest = find_node(edge.b);
+			var end = new paper.Point(dest.x, dest.y);
+
+			var edge = new paper.Path();
+			edge.strokeColor = 'black';
+
+			edge.moveTo(start);
+			edge.lineTo(end);
+			edgepaths.push(edge);
+		});
+		return [pointpaths, edgepaths];
+	}
+
+	var pe;
+	/* Shift everything on the canvas by vector (x,y) */
+	function translate(x,y) {
+		//ppoints = pe[0];
+		//pedges = pe[1];
+		pe[0].forEach(function(point) { 
+			point.position.x += x;
+			point.position.y += y;
+		});
+		pe[1].forEach(function(edge) { 
+			edge.position.x += x;
+			edge.position.y += y;
+		});
+	}
+
+	/* Remove points and edges that are completely off the canvas */
+	function filter() {
+		pe[0] = pe[0].filter(function(point) {
+			return !(point.position.x > width
+			|| point.position.x < 0
+			|| point.position.y > height
+			|| point.position.y < 0);
+		});
+
+		pe[1] = pe[1].filter(function(edge) {
+			var x0 = edge._segments[0]._point.x;
+			var y0 = edge._segments[0]._point.y;
+			var x1 = edge._segments[1]._point.x;
+			var y1 = edge._segments[1]._point.y;
+		
+			return !((x0 > width && x1 > width)
+			|| (x0 < 0 && x1 < 0)
+			|| (y0 > height && y1 > height) 
+			|| (y0 < 0 && y1 < 0));
+		});
+	}
+
+	// Can we use something like a zipper for mainting consistentcy between
+	// points in memory and points drawn on the screen? 
+
+	var tool = new paper.Tool();
+	var last = null;
+	tool.minDistance = 1;
+	tool.onMouseDrag = function(event) {
+		if (last) {
+			translate(event.point.x - last.x, event.point.y - last.y);
+			//filter();
+			last = event.point;
+		}
+	}
+	tool.onMouseDown = function(event) {
+		last = event.point;
+	}
+
+	tool.onMouseUp = function(event) {
+		filter();
+	};
+
+	// I dislike JS this much right now: 1------x-10
+	var test = ["graph test {",
+				"graph [bb=\"0,0,449.04,196.86\"];",
+				"node [label=\"\N\"];",
+				"a	 [height=0.5,",
+				"pos=\"422.04,18\",",
+				"width=0.75];",
+				"b	 [height=0.5,",
+				"pos=\"421.79,178.86\",",
+				"width=0.75];",
+				"a -- b	 [pos=\"422.01,36.139 421.96,67.033 421.87,129.52 421.82,160.54\"];",
+				"c	 [height=0.5,",
+				"	pos=\"242.1,98.404\",",
+				"	width=0.75];",
+				"a -- c	 [pos=\"399.25,28.183 364.64,43.649 299.21,72.886 264.7,88.303\"];",
+				"b -- c	 [pos=\"399.03,168.67 364.47,153.19 299.13,123.94 264.67,108.51\"];",
+				"d	 [height=0.5,",
+				"	pos=\"27,98.351\",",
+				"	width=0.75];",
+				"c -- d	 [pos=\"214.86,98.397 173.48,98.387 95.265,98.368 54.021,98.358\"];",
+				"}"];
+	var str = test.join("\n");
+	// Load all the nodes into memory. This may need to be improved later.
+	var graph = parse(str);
+	// Draw everything for now.
+	var nodes = graph.nodes;
+	var edges = graph.edges;
+	start();
+	pe = draw_graph();
+	paper.view.draw();
+	</script>
+</body>
+</html>

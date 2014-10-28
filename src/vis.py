@@ -63,21 +63,25 @@ depth = int(sys.argv[1]) # How far to go in the DFS. It expands pretty rapidly. 
 record = {}
 initial_address = "1FHKW7smZSsLPS7BCPuWwpMWSyRwsfabcp"
 
+pkldir = "pickles"
+datadir = "data"
 
 # DFS or read from pickled file?
+fstr = "/".join([pkldir, "record{}.pkl".format(depth)])
 if True:
     explore_addr(initial_address, depth, record)
     print("\n\nWriting record to file\n")
-    f = open("record_str{}.txt".format(depth), 'wb')
+    f = open(fstr, 'wb')
     pickle.dump(record, f)
     f.close()
 else:
-    record = from_file("record_str{}.txt".format(depth))
+    record = from_file(fstr)
     print(len(record))
 
 def export_gexf(record):
     """ Create a gexf file from a record """
-    f = open("record{}.gexf".format(depth), 'w')
+    dstr = "/".join([ datadir, "record{}.gexf".format(depth)])
+    f = open(dstr, 'w')
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     f.write('<gexf xmlns="http://www.gexf.net/1.2draft" version="1.2">\n')
     f.write('\t<graph mode="static" defaultedgetype="directed">\n')

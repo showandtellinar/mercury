@@ -19,6 +19,19 @@ fn main() {
     parse_block(&mut file);
 }
 
+fn string_of_hex(hex: & Vec<u8>) -> Vec<String>{
+    hex.iter().map(|h| {
+        let base16 = ['0', '1', '2', '3', 
+                      '4', '5', '6', '7', 
+                      '8', '9', 'A', 'B', 
+                      'C', 'D', 'E', 'F'];
+        let mut s = String::new();
+        s.push(base16[(h/16) as uint]);
+        s.push(base16[(h%16) as uint]);
+        s
+    }).collect()
+}
+
 fn parse_block(file: &mut File) {
     let header = unwrap!(file.read_le_u32());
     //println!("header={}",header);
@@ -30,10 +43,10 @@ fn parse_block(file: &mut File) {
     //println!("sha={}",sha);
     
     let merkle = unwrap!(file.read_exact(32));
-    //println!("merkle={}",merkle);
+    println!("merkle={}",string_of_hex(&merkle));
 
     let timestamp = unwrap!(file.read_le_u32());
-    println!("timestamp={}",timestamp);
+    //println!("timestamp={}",timestamp);
 
     let difficulty = unwrap!(file.read_le_u32());
     //println!("difficulty={}",difficulty);
@@ -51,7 +64,7 @@ fn parse_block(file: &mut File) {
         println!("{} inputs", input_count);
         for _ in range(0, input_count) {
             let transaction_hash = unwrap!(file.read_exact(32));
-            println!("tx hash={}",transaction_hash);
+            println!("tx hash={}",string_of_hex(&transaction_hash));
             let transaction_index = unwrap!(file.read_le_u32());
             let script_length = read_vli(file) as uint; // is this okay?
             let script = unwrap!(file.read_exact(script_length));

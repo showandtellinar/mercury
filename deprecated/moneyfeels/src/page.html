@@ -1,0 +1,172 @@
+<html>
+	<head>
+		<title>network</title>
+		<script src="../sigma.js/src/sigma.core.js"></script>
+		<script src="../sigma.js/src/conrad.js"></script>
+		<script src="../sigma.js/src/utils/sigma.utils.js"></script>
+		<script src="../sigma.js/src/utils/sigma.polyfills.js"></script>
+		<script src="../sigma.js/src/sigma.settings.js"></script>
+		<script src="../sigma.js/src/classes/sigma.classes.dispatcher.js"></script>
+		<script src="../sigma.js/src/classes/sigma.classes.configurable.js"></script>
+		<script src="../sigma.js/src/classes/sigma.classes.graph.js"></script>
+		<script src="../sigma.js/src/classes/sigma.classes.camera.js"></script>
+		<script src="../sigma.js/src/classes/sigma.classes.quad.js"></script>
+		<script src="../sigma.js/src/captors/sigma.captors.mouse.js"></script>
+		<script src="../sigma.js/src/captors/sigma.captors.touch.js"></script>
+		<script src="../sigma.js/src/renderers/sigma.renderers.canvas.js"></script>
+		<script src="../sigma.js/src/renderers/sigma.renderers.webgl.js"></script>
+		<script src="../sigma.js/src/renderers/sigma.renderers.def.js"></script>
+		<script src="../sigma.js/src/renderers/webgl/sigma.webgl.nodes.def.js"></script>
+		<script src="../sigma.js/src/renderers/webgl/sigma.webgl.nodes.fast.js"></script>
+		<script src="../sigma.js/src/renderers/webgl/sigma.webgl.edges.def.js"></script>
+		<script src="../sigma.js/src/renderers/webgl/sigma.webgl.edges.fast.js"></script>
+		<script src="../sigma.js/src/renderers/webgl/sigma.webgl.edges.arrow.js"></script>
+		<script src="../sigma.js/src/renderers/canvas/sigma.canvas.labels.def.js"></script>
+		<script src="../sigma.js/src/renderers/canvas/sigma.canvas.hovers.def.js"></script>
+		<script src="../sigma.js/src/renderers/canvas/sigma.canvas.nodes.def.js"></script>
+		<script src="../sigma.js/src/renderers/canvas/sigma.canvas.edges.def.js"></script>
+		<script src="../sigma.js/src/renderers/canvas/sigma.canvas.edges.curve.js"></script>
+		<script src="../sigma.js/src/renderers/canvas/sigma.canvas.edges.arrow.js"></script>
+		<script src="../sigma.js/src/renderers/canvas/sigma.canvas.edges.curvedArrow.js"></script>
+		<script src="../sigma.js/src/middlewares/sigma.middlewares.rescale.js"></script>
+		<script src="../sigma.js/src/middlewares/sigma.middlewares.copy.js"></script>
+		<script src="../sigma.js/src/misc/sigma.misc.animation.js"></script>
+		<script src="../sigma.js/src/misc/sigma.misc.bindEvents.js"></script>
+		<script src="../sigma.js/src/misc/sigma.misc.drawHovers.js"></script>
+		<script src="../sigma.js/plugins/sigma.parsers.gexf/gexf-parser.js"></script>
+		<script src="../sigma.js/plugins/sigma.parsers.gexf/sigma.parsers.gexf.js"></script>
+		<script src="../sigma.js/plugins/sigma.layout.forceAtlas2/worker.js"></script>
+		<script src="../sigma.js/plugins/sigma.layout.forceAtlas2/supervisor.js"></script>
+	</head>
+	<body>
+		<p>graph should be below</p>
+		<div id="graph-container">
+			<style>
+				#graph-container {
+				  top: 0;
+				  bottom: 0;
+				  left: 0;
+				  right: 0;
+				  position: absolute;
+				}
+			</style>
+		</div>
+		<script>
+		var g = {
+			nodes: [],
+			edges: []
+		};
+
+		sigma.classes.graph.addMethod('neighbors', function(nodeId) {
+			var k,
+				neighbors = {},
+				index = this.allNeighborsIndex[nodeId] || {};
+
+			for (k in index)
+				neighbors[k] = this.nodesIndex[k];
+
+			return neighbors;
+		});
+
+		// Create new Sigma instance in graph-container div
+		s = new sigma({
+			graph: g,
+			container: 'graph-container',
+			renderer: {
+			container: document.getElementById('graph-container'),
+			type: 'canvas'
+			},
+			settings: {
+				minNodeSize: 8,
+				maxNodeSize: 16
+				}
+			});
+
+		sigma.parsers.gexf('record.gexf', s,
+		function(s) {
+			var i, 
+				nodes = s.graph.nodes(), 
+				len = nodes.length;
+
+			function componentToHex(c) {
+				var hex = c.toString(16);
+				return hex.length == 1 ? "0" + hex : hex;
+			}
+
+			function rgbToHex(r, g, b) {
+				return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+			}
+
+			function depthToHex(d, maxDepth) {
+				var v = 150+100.0 * d / maxDepth;
+				v = parseInt(v.toFixed(0));
+				return rgbToHex(v, 0, 0);
+			}
+
+			var maxDepth = 0;
+			for (i = 0; i < len; i++) {
+				var d = nodes[i].attributes['0'];
+				maxDepth = (maxDepth < d) ? d : maxDepth;
+			}
+
+			for (i = 0; i < len; i++) {
+				nodes[i].x = Math.random();
+				nodes[i].y = Math.random();
+				nodes[i].size = s.graph.degree(nodes[i].id);
+				nodes[i].color = depthToHex(nodes[i].attributes['0'], maxDepth);
+			}
+				
+			s.graph.nodes().forEach(function(n) {
+				n.originalColor = n.color;
+			});
+
+			s.graph.edges().forEach(function(e) {
+				e.originalColor = e.color;
+			});
+
+			s.bind('clickNode', function(e) {
+				var nodeId = e.data.node.id,
+					toKeep = s.graph.neighbors(nodeId);
+				toKeep[nodeId] = e.data.node;
+
+				s.graph.nodes().forEach(function(n) {
+					if (toKeep[n.id])
+						n.color = n.originalColor;
+					else
+						n.color = '#eee';
+				});
+
+				s.graph.edges().forEach(function(e) {
+					if (toKeep[e.source] && toKeep[e.target]) {
+						e.color = e.originalColor;
+					}
+					else
+						e.color = '#eee';
+				});
+
+				s.refresh();
+			});
+
+			s.bind('clickStage', function(e) {
+				s.graph.nodes().forEach(function(n) {
+					n.color = n.originalColor;
+				});
+
+				s.graph.edges().forEach(function(e) {
+					e.color = e.originalColor;
+				});
+
+				// Same as in the previous event:
+				s.refresh();
+			});
+
+			// Refresh the display:
+			s.refresh();
+
+			// ForceAtlas Layout
+			s.startForceAtlas2();
+			//s.stopForceAtlas2();
+		}); 
+		</script>
+	</body>
+</html>

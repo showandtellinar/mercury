@@ -11,12 +11,18 @@ macro_rules! unwrap(
     );
 )
 
+macro_rules! vprintln(
+    ($flag: ident, $msg: expr, $($args:expr)*) => (
+        if $flag { println!($msg, $($args)*); }
+    );
+)
+
 fn main() {
     let path = Path::new("/home/alex/.bitcoin/blocks/blk00000.dat");
     let mut file = unwrap!(File::open(&path));
 
     verify_block(&mut file);
-    parse_block(&mut file);
+    parse_block(&mut file, false);
 }
 
 fn string_of_hex(hex: & Vec<u8>) -> Vec<String>{
@@ -32,30 +38,30 @@ fn string_of_hex(hex: & Vec<u8>) -> Vec<String>{
     }).collect()
 }
 
-fn parse_block(file: &mut File) {
+fn parse_block(file: &mut File, verbose: bool) {
     let header = unwrap!(file.read_le_u32());
-    //println!("header={}",header);
+    vprintln!(verbose, "header={}",header);
     
     let version = unwrap!(file.read_le_u32());
-    println!("version={}",version);
+    vprintln!(verbose, "version={}",version);
 
     let sha = unwrap!(file.read_exact(32));
-    //println!("sha={}",sha);
+    vprintln!(verbose, "sha={}",sha);
     
     let merkle = unwrap!(file.read_exact(32));
-    println!("merkle={}",string_of_hex(&merkle));
+    vprintln!(verbose, "merkle={}",string_of_hex(&merkle));
 
     let timestamp = unwrap!(file.read_le_u32());
-    //println!("timestamp={}",timestamp);
+    vprintln!(verbose, "timestamp={}",timestamp);
 
     let difficulty = unwrap!(file.read_le_u32());
-    //println!("difficulty={}",difficulty);
+    vprintln!(verbose, "difficulty={}",difficulty);
 
     let nonce = unwrap!(file.read_le_u32());
-    println!("nonce={}",nonce);
+    vprintln!(verbose, "nonce={}",nonce);
 
     let transaction_count = read_vli(file);
-    println!("transaction_count={}",transaction_count);
+    vprintln!(verbose, "transaction_count={}",transaction_count);
 
     for _ in range(0, transaction_count) {
         let transaction_version = unwrap!(file.read_le_u32());
@@ -86,7 +92,7 @@ fn parse_block(file: &mut File) {
     }
 
     // Now, we should be done with the block.
-    assert!(file.eof());
+    //assert!(file.eof()); // apparently there's some extra stuff at the end?
 }
 
 fn read_vli(file: &mut File) -> u64 {

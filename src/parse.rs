@@ -19,20 +19,6 @@ pub mod parse {
         );
     )
 
-    #[allow(dead_code)]
-    fn string_of_hex(hex: & Vec<u8>) -> Vec<String>{
-        hex.iter().map(|h| {
-            let base16 = ['0', '1', '2', '3', 
-                          '4', '5', '6', '7', 
-                          '8', '9', 'A', 'B', 
-                          'C', 'D', 'E', 'F'];
-            let mut s = String::new();
-            s.push(base16[(h/16) as uint]);
-            s.push(base16[(h%16) as uint]);
-            s
-        }).collect()
-    }
-
     #[allow(unused_variable)]
     pub fn parse_block(file: &mut File, verbose: bool) -> types::Block {
         verify_block(file);

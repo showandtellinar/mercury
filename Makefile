@@ -1,4 +1,4 @@
-.PHONY: lib clean all
+.PHONY: clean lib
 
 all: main
 

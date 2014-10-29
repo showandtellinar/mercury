@@ -10,15 +10,21 @@ pub mod utils {
     }
     
     fn string_of_hex(hex: & Vec<u8>) -> String {
-        let mut hex_string = String::from_str("0x");
+        let mut hex_string = String::new();
         let base16 = ['0', '1', '2', '3', 
                       '4', '5', '6', '7', 
                       '8', '9', 'A', 'B', 
                       'C', 'D', 'E', 'F'];
+        let mut counter = 0u;
         for h in hex.iter() {
             hex_string.push(base16[(h/16) as uint]);
             hex_string.push(base16[(h%16) as uint]);
+            counter += 1;
+            if counter%4 == 0 {
+                hex_string.push('\n');
+            }
         }
+        hex_string.pop();
         return hex_string;
     }
 

@@ -2,6 +2,8 @@
 #![allow(unused_variable)]
 use std::io::{File};
 
+pub mod types;
+
 macro_rules! unwrap(
     ($inp: expr) => (
         match $inp {
@@ -38,61 +40,75 @@ fn string_of_hex(hex: & Vec<u8>) -> Vec<String>{
     }).collect()
 }
 
-fn parse_block(file: &mut File, verbose: bool) {
+fn parse_block(file: &mut File, verbose: bool) -> types::Block {
     let header = unwrap!(file.read_le_u32());
-    vprintln!(verbose, "header={}",header);
-    
     let version = unwrap!(file.read_le_u32());
-    vprintln!(verbose, "version={}",version);
-
     let sha = unwrap!(file.read_exact(32));
-    vprintln!(verbose, "sha={}",sha);
-    
     let merkle = unwrap!(file.read_exact(32));
-    vprintln!(verbose, "merkle={}",string_of_hex(&merkle));
-
     let timestamp = unwrap!(file.read_le_u32());
-    vprintln!(verbose, "timestamp={}",timestamp);
-
     let difficulty = unwrap!(file.read_le_u32());
-    vprintln!(verbose, "difficulty={}",difficulty);
-
     let nonce = unwrap!(file.read_le_u32());
-    vprintln!(verbose, "nonce={}",nonce);
-
     let transaction_count = read_vli(file);
-    vprintln!(verbose, "transaction_count={}",transaction_count);
 
+    let mut txns = Vec::new();
     for _ in range(0, transaction_count) {
         let transaction_version = unwrap!(file.read_le_u32());
 
         let input_count = read_vli(file);
-        println!("{} inputs", input_count);
+        let mut txns_in = Vec::new();
         for _ in range(0, input_count) {
             let transaction_hash = unwrap!(file.read_exact(32));
-            println!("tx hash={}",string_of_hex(&transaction_hash));
             let transaction_index = unwrap!(file.read_le_u32());
-            let script_length = read_vli(file) as uint; // is this okay?
-            let script = unwrap!(file.read_exact(script_length));
+            let script_length = read_vli(file);
+            let script = unwrap!(file.read_exact(script_length as uint));
             let sequence_number = unwrap!(file.read_le_u32());
             assert!(sequence_number == 0xFFFFFFFFu32);
+
+            txns_in.push( types::TxIn {
+                previous_output : types::OutPoint { 
+                    hash : transaction_hash, 
+                    index : transaction_index },
+                script_length : script_length,
+                signature_script : script,
+                sequence : sequence_number
+            });
         }
 
         let output_count = read_vli(file);
-        println!("{} outputs", output_count);
+        let mut txns_out = Vec::new();
         for _ in range(0, output_count) {
-            let value = unwrap!(file.read_le_u64());
-            println!("value={}", value);
-            let script_length = read_vli(file) as uint;
-            let script = unwrap!(file.read_exact(script_length));
+            let value = unwrap!(file.read_le_i64());
+            let script_length = read_vli(file);
+            let script = unwrap!(file.read_exact(script_length as uint));
+            txns_out.push( types::TxOut {
+                value : value,
+                pk_script_length : script_length,
+                pk_script : script
+            });
         }
 
         let lock_time = unwrap!(file.read_le_u32());
-        assert!(lock_time == 0u32);
+
+        txns.push( types::Transaction {
+            version : transaction_version,
+            tx_in_count : input_count,
+            tx_in : txns_in,
+            tx_out_count : output_count,
+            tx_out : txns_out,
+            lock_time : lock_time
+        });
     }
 
-    // Now, we should be done with the block.
-    //assert!(file.eof()); // apparently there's some extra stuff at the end?
+    types::Block {
+        version : version,
+        prev_block : sha, 
+        merkle_root : merkle,
+        timestamp : timestamp,
+        bits : difficulty,
+        nonce : nonce,
+        txn_count : transaction_count,
+        txns : txns
+    }
 }
 
 fn read_vli(file: &mut File) -> u64 {

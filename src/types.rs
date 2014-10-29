@@ -1,4 +1,6 @@
-mod types { 
+pub use self::types::*;
+
+pub mod types { 
     #[allow(dead_code)]
     pub struct Block {
         pub version : u32,

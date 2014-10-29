@@ -1,7 +1,9 @@
-use std::io::{File};
-use types;
+pub use self::parse::*;
 
-mod parse {
+pub mod parse {
+    use types;
+    use std::io::File;
+
     macro_rules! unwrap(
         ($inp: expr) => (
             match $inp {
@@ -17,6 +19,7 @@ mod parse {
         );
     )
 
+    #[allow(dead_code)]
     fn string_of_hex(hex: & Vec<u8>) -> Vec<String>{
         hex.iter().map(|h| {
             let base16 = ['0', '1', '2', '3', 
@@ -30,8 +33,9 @@ mod parse {
         }).collect()
     }
 
+    #[allow(unused_variable)]
     pub fn parse_block(file: &mut File, verbose: bool) -> types::Block {
-        verify_block(file, verbose);
+        verify_block(file);
 
         let header = unwrap!(file.read_le_u32());
         let version = unwrap!(file.read_le_u32());
@@ -116,7 +120,7 @@ mod parse {
         }
     }
 
-    fn verify_block(file: &mut File, verbose : bool) {
+    fn verify_block(file: &mut File) {
         let magic_uint : u32 = 0xD9B4BEF9;
         let file_uint = unwrap!(file.read_le_u32());
         assert!(magic_uint == file_uint);

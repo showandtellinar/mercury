@@ -3,15 +3,13 @@
 all: main
 
 test: main lib
-	./main ~/.bitcoin/blocks/blk00000.dat
+	time ./main ~/.bitcoin/blocks/blk00000.dat
 
 main: main.rs lib
-	rustc -L . main.rs
+	rustc --opt-level 2 -L . main.rs
 
 lib: src/*
-	rustc src/lib.rs
-
-
+	rustc --opt-level 2 src/lib.rs
 
 clean: 
 	rm *.rlib

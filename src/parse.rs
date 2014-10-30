@@ -8,7 +8,7 @@ pub mod parse {
         ($inp: expr) => (
             match $inp {
                 Ok(r) => r,
-                Err(e) => fail!("{}",e)
+                Err(e) => fail!("error: {}",e)
             }
         );
     )
@@ -22,20 +22,23 @@ pub mod parse {
     #[allow(unused_variable)]
     pub fn parse_file(file: &mut File, verbose: bool) -> Vec<types::Block> {
         let mut blocks : Vec<types::Block> = Vec::new();
-        while !file.eof() {
-            blocks.push(parse_block(file, verbose));
+        loop {
+            match parse_block(file, verbose) {
+                None => break,
+                Some(b) => blocks.push(b)
+            }
         }
         return blocks;
     }
 
     #[allow(unused_variable)]
-    fn parse_block(file: &mut File, verbose: bool) -> types::Block {
-        verify_block(file);
+    #[allow(unused_must_use)]
+    fn parse_block(file: &mut File, verbose: bool) -> Option<types::Block> {
+        if !verify_block(file) { return None; }
 
         let header = unwrap!(file.read_le_u32());
         let version = unwrap!(file.read_le_u32());
         let sha = unwrap!(file.read_exact(32));
-        //println!("parsing block {}", sha);
         let merkle = unwrap!(file.read_exact(32));
         let timestamp = unwrap!(file.read_le_u32());
         let difficulty = unwrap!(file.read_le_u32());
@@ -93,8 +96,8 @@ pub mod parse {
             });
         }
 
-        types::Block {
-            version : version,
+        Some(types::Block {
+            version : 1u32,//version,
             prev_block : sha, 
             merkle_root : merkle,
             timestamp : timestamp,
@@ -102,7 +105,7 @@ pub mod parse {
             nonce : nonce,
             txn_count : transaction_count,
             txns : txns
-        }
+        })
     }
 
     fn read_vli(file: &mut File) -> u64 {
@@ -120,14 +123,19 @@ pub mod parse {
 
     #[allow(unused_must_use)]
     #[allow(unused_variable)]
-    fn verify_block(file: &mut File) {
-        if file.eof() { return; }
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+    fn verify_block(file: &mut File) -> bool {
         let magic_uints : [u32, .. 4] = [0xD9B4BEF9, 
                                          0xDAB5BFFA,
                                          0x0609110B,
                                          0xFEB4BEF9];
-        //let file_uint = unwrap!(file.read_le_u32());
-        //assert!(magic_uints.iter().any(|hex| hex == &file_uint));
+        /* We need to use this hack. Testing if we're at the end of the file 
+         * isn't enough since EOF is only get to true once we've read *past* 
+         * the end of a file. */
+        let file_uint = match file.read_le_u32() {
+            Err(_) => return false,
+            Ok(i) => i
+        };
+        assert!(magic_uints.iter().any(|hex| hex == &file_uint));
+        return true
     }
 }

@@ -10,4 +10,3 @@ fn main() {
 
     parse::parse_file(&mut file, false);
 }
-

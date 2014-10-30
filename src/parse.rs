@@ -20,12 +20,22 @@ pub mod parse {
     )
 
     #[allow(unused_variable)]
-    pub fn parse_block(file: &mut File, verbose: bool) -> types::Block {
+    pub fn parse_file(file: &mut File, verbose: bool) -> Vec<types::Block> {
+        let mut blocks : Vec<types::Block> = Vec::new();
+        while !file.eof() {
+            blocks.push(parse_block(file, verbose));
+        }
+        return blocks;
+    }
+
+    #[allow(unused_variable)]
+    fn parse_block(file: &mut File, verbose: bool) -> types::Block {
         verify_block(file);
 
         let header = unwrap!(file.read_le_u32());
         let version = unwrap!(file.read_le_u32());
         let sha = unwrap!(file.read_exact(32));
+        //println!("parsing block {}", sha);
         let merkle = unwrap!(file.read_exact(32));
         let timestamp = unwrap!(file.read_le_u32());
         let difficulty = unwrap!(file.read_le_u32());
@@ -44,7 +54,7 @@ pub mod parse {
                 let script_length = read_vli(file);
                 let script = unwrap!(file.read_exact(script_length as uint));
                 let sequence_number = unwrap!(file.read_le_u32());
-                assert!(sequence_number == 0xFFFFFFFFu32);
+                //assert!(sequence_number == 0xFFFFFFFFu32);
 
                 txns_in.push( types::TxIn {
                     previous_output : types::OutPoint { 
@@ -62,6 +72,7 @@ pub mod parse {
                 let value = unwrap!(file.read_le_i64());
                 let script_length = read_vli(file);
                 let script = unwrap!(file.read_exact(script_length as uint));
+                //println!("{}",utils::string_of_hex(&script));
                 txns_out.push( types::TxOut {
                     value : value,
                     pk_script_length : script_length,
@@ -70,6 +81,7 @@ pub mod parse {
             }
 
             let lock_time = unwrap!(file.read_le_u32());
+            //println!("{}",lock_time);
 
             txns.push( types::Transaction {
                 version : transaction_version,
@@ -106,9 +118,23 @@ pub mod parse {
         }
     }
 
+    #[allow(unused_must_use)]
+    #[allow(unused_variable)]
     fn verify_block(file: &mut File) {
-        let magic_uint : u32 = 0xD9B4BEF9;
-        let file_uint = unwrap!(file.read_le_u32());
-        assert!(magic_uint == file_uint);
+        if file.eof() { return; }
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
+        let magic_uints : [u32, .. 4] = [0xD9B4BEF9, 
+                                         0xDAB5BFFA,
+                                         0x0609110B,
+                                         0xFEB4BEF9];
+        //let file_uint = unwrap!(file.read_le_u32());
+        //assert!(magic_uints.iter().any(|hex| hex == &file_uint));
     }
 }

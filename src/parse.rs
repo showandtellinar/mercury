@@ -123,13 +123,6 @@ pub mod parse {
     fn verify_block(file: &mut File) {
         if file.eof() { return; }
         file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
-        file.read_byte(); file.read_byte(); file.read_byte(); file.read_byte();
         let magic_uints : [u32, .. 4] = [0xD9B4BEF9, 
                                          0xDAB5BFFA,
                                          0x0609110B,
